@@ -28,7 +28,7 @@ public with sharing class HandlerManager
     /**
      *  Remove the tick from the active box when orders are deleted   
     */  
-    public static void unCheckActiveAccount(List <Order> orders) 
+    public static void checkActiveAccount(List <Order> orders) 
     {
         List<Account> accountsToUpdate = new List<Account>();
         Set<Id> accIds = new Set<Id>();
@@ -42,17 +42,13 @@ public with sharing class HandlerManager
         List<Order> nbOrders = [ SELECT Id 
                                FROM Order 
                                WHERE AccountId = :ordersOldAccountIds
-                            ];
-        
+                            ];      
 
         if(nbOrders.size() == 0)
         {
             accIds.addAll(ordersOldAccountIds);
-        }
-        else
-        {
+        }else{
             for(Order ord : orders){
-
                 accIds.add(ord.AccountId);
             }
         }
@@ -65,5 +61,26 @@ public with sharing class HandlerManager
         if(accountsToUpdate.size() > 0){
             update accountsToUpdate;
         }
+    }
+
+    /**
+     * List Account with no orders and no tasks and create task reminder
+     */
+    public static void insertTasks(List<Account> listAccounts)
+    {           
+            List<Task> tasksToCreate = new List<Task>();
+            for (Account account : listAccounts) {
+                tasksToCreate.add(
+                    new Task(WhatId = account.Id, 
+                             Subject = 'Call', 
+                             Status = 'New', 
+                             Priority = 'Normal',
+                             TaskSubtype = 'Call',
+                             IsReminderSet = true, 
+                             ReminderDateTime = Date.today().addDays(5)));
+            }
+            if (tasksToCreate.size() > 0){
+                insert tasksToCreate;
+            } 
     }
 }

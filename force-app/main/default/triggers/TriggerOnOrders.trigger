@@ -14,7 +14,7 @@ trigger TriggerOnOrders on order (before Insert, before Update, after Delete, af
           
     }
     if(Trigger.isDelete){
-        HandlerManager.unCheckActiveAccount(Trigger.old);
+        HandlerManager.checkActiveAccount(Trigger.old);
     }
 
 }
