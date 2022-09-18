@@ -1,10 +1,13 @@
 /**
-* Class checking the status of orders and accounts before updates 
-* HandlerManagerOrders
-*/
-public with sharing class HandlerManager 
-{
-    /**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 09-18-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
+public with sharing class HandlerManagerOrders {
+
+     /**
      * Check that there are products on the order
      */    
     public static void checkStatusChange(List<Order> orders)
@@ -83,4 +86,6 @@ public with sharing class HandlerManager
                 insert tasksToCreate;
             } 
     }
+    
+    
 }
