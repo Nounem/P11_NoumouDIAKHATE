@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 09-23-2022
+ * @last modified on  : 09-25-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @IsTest
@@ -27,7 +27,7 @@ public class TestDataFactory
         return contract;
     }
 
-    public static List<Order> createOrders(Integer cnt, List<Account>accts, PricebookEntry pbEntry) {
+    public static List<Order> createOrders(Integer cnt, List<Account> accts, PricebookEntry pbEntry) {
         List<Order> orders = new List<Order>();
         for (Integer i = 0 ; i < accts.size() ; i++) {
             Account acct = accts[i];
@@ -70,14 +70,14 @@ public class TestDataFactory
         return product;
     }
     
-    public static List<OrderItem> createOrderItems(Integer num, List<Order> orders, PriceBookEntry pbEntry) {
+    public static List<OrderItem> createOrderItems(List<Order> orders, PriceBookEntry pbEntry) {
         List<OrderItem> orderItems = new List<OrderItem>();
         for (Order ord : orders) {
             OrderItem orderItem = new OrderItem(
                 OrderId = ord.Id,
                 PricebookEntryId = pbEntry.Id,
                 UnitPrice = pbEntry.UnitPrice,
-                Quantity = num
+                Quantity =  Integer.valueof((Math.random() * 100))
             );
             orderItems.add(orderItem);
         }
@@ -85,31 +85,13 @@ public class TestDataFactory
         return orderItems;
     }
 
-    public static List<OrderItem> createOrderItemsWithRandomQuantity(List<Order> orders, PriceBookEntry pbEntry) {
-        List<OrderItem> orderItems = new List<OrderItem>();
-        Integer min = 1;
-        Integer max = 10;
-        Integer num;
-        
-        for (Order ord : orders) {
-            num = (Integer) Math.floor(Math.random() * ( max - min + 1 ) + min);
-            OrderItem orderItem = new OrderItem(
-                OrderId = ord.Id,
-                PricebookEntryId = pbEntry.Id,
-                UnitPrice = pbEntry.UnitPrice,
-                Quantity = num
-            );
-            orderItems.add(orderItem);
-        }
-        insert orderItems;
-        return orderItems;
-    }
+   
     public static Task createReminderTaskForAccount(Account account) {
         Task task = new Task(
             WhatId = account.Id,
             OwnerId = account.OwnerId,
             Subject = 'Call',
-            Status = 'Not Started',
+            Status = 'New',
             Priority = 'Normal',
             IsReminderSet = true,
             ReminderDateTime = Date.today().addDays(5)
