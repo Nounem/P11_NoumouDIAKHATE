@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 09-25-2022
+ * @last modified on  : 10-02-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public with sharing class HandlerManagerOrders {
@@ -22,7 +22,7 @@ public with sharing class HandlerManagerOrders {
            
             if(ord.Status =='Activated' && items.isEmpty())
             {
-                ord.addError('Merci d ajouter un produit avant d activer ');
+                ord.addError('Merci d ajouter un produit avant d activer');
             }
         }
 
@@ -42,10 +42,7 @@ public with sharing class HandlerManagerOrders {
             ordersOldAccountIds.add(ord.AccountId);
         }
 
-        List<Order> nbOrders = [ SELECT Id 
-                               FROM Order 
-                               WHERE AccountId = :ordersOldAccountIds
-                            ];      
+        List<Order> nbOrders = [ SELECT Id FROM Order  WHERE AccountId = :ordersOldAccountIds];      
 
         if(nbOrders.size() == 0)
         {
@@ -59,7 +56,6 @@ public with sharing class HandlerManagerOrders {
         for(Account acc : [SELECT Id, Active__c FROM Account Where Id IN : accIds]){
             acc.Active__c = false;
             accountsToUpdate.add(acc);
-
         }
         if(accountsToUpdate.size() > 0){
             update accountsToUpdate;

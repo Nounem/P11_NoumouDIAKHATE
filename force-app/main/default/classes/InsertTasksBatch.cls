@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 09-25-2022
+ * @last modified on  : 10-08-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 global class InsertTasksBatch implements Database.Batchable<sObject> 
@@ -11,7 +11,10 @@ global class InsertTasksBatch implements Database.Batchable<sObject>
     {
         Set<Id> taskIds = new Set<Id>();
 
-        for ( Task tasks : [SELECT Id, WhatId FROM Task WHERE What.Type='Account' AND TaskSubtype = 'Call']){
+        for ( Task tasks : [SELECT Id, WhatId 
+                            FROM Task 
+                            WHERE What.Type='Account' AND TaskSubtype = 'Call'])
+            {
 
             taskIds.add(tasks.WhatId);
         }

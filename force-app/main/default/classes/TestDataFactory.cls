@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 09-25-2022
+ * @last modified on  : 10-09-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @IsTest
@@ -72,12 +72,13 @@ public class TestDataFactory
     
     public static List<OrderItem> createOrderItems(List<Order> orders, PriceBookEntry pbEntry) {
         List<OrderItem> orderItems = new List<OrderItem>();
+
         for (Order ord : orders) {
             OrderItem orderItem = new OrderItem(
                 OrderId = ord.Id,
                 PricebookEntryId = pbEntry.Id,
                 UnitPrice = pbEntry.UnitPrice,
-                Quantity =  Integer.valueof((Math.random() * 100))
+                Quantity =  Integer.valueof((Math.random() * 100) + 5)
             );
             orderItems.add(orderItem);
         }
@@ -85,8 +86,23 @@ public class TestDataFactory
         return orderItems;
     }
 
+    public static Order createSingleOrder(Account acct, PricebookEntry pbEntry) {
+
+        Order ord = new Order();
+        ord.name = 'OrderSingle';
+        ord.AccountId = acct.Id;
+        ord.EffectiveDate = System.today();
+        ord.Status = 'Draft';
+        ord.Pricebook2Id = pbEntry.Pricebook2Id;
+
+        insert ord;
+        return ord;
+    }
+
    
-    public static Task createReminderTaskForAccount(Account account) {
+    public static Task createReminderTaskForAccount(Account account) 
+    {
+       
         Task task = new Task(
             WhatId = account.Id,
             OwnerId = account.OwnerId,
