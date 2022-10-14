@@ -100,15 +100,15 @@ public class TestDataFactory
     }
 
    
-    public static Task createReminderTaskForAccount(Account account) 
+    public static Task createTaskForAccount(Account account) 
     {
        
         Task task = new Task(
             WhatId = account.Id,
-            OwnerId = account.OwnerId,
-            Subject = 'Call',
+            Subject = 'Call test',
             Status = 'New',
             Priority = 'Normal',
+            TaskSubtype = 'Call',
             IsReminderSet = true,
             ReminderDateTime = Date.today().addDays(5)
         );

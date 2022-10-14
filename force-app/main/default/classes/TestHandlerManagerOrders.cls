@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 10-02-2022
+ * @last modified on  : 10-14-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @isTest
@@ -17,31 +17,15 @@ public class TestHandlerManagerOrders {
         Order singleOrder = TestDataFactory.createSingleOrder(acct[0],priceBook);
         List<OrderItem> orderItems = TestDataFactory.createOrderItems(ord, priceBook);
 
-        
+        // si le accountId associer à une commande 
     }
 
-    @isTest
-    static void inactiveAccWhereOrderDeleted(){
-        Account  account = [SELECT Id, Active__c FROM Account WHERE Name LIKE 'TestAccount_0'];
-        List <Order> orders = [SELECT AccountId FROM Order WHERE Account.Id = :account.Id ];
-        //Delete all orders from the account
-        Test.startTest();
-        delete orders;
-        
-        Account result = [SELECT Id, Active__c, (SELECT Id FROM Orders)  FROM Account WHERE Name = 'TestAccount_0'];
-        Test.stopTest();
-        
-        System.assertEquals(0, result.Orders.size());
-        System.assertEquals(False, result.Active__c);
-    }
-
-   
-// testvalidestatus order.status = status
+  
     @IsTest
     static void testErrorOnStatus() {
 
         Order order =[SELECT Id, Status FROM Order WHERE Id NOT IN (SELECT OrderId FROM OrderItem ) LIMIT 1  ];
-        System.debug('liste order'+order);
+        System.debug('liste orderTest '+order);
         Test.startTest();
         try {
             order.Status = 'Activated';
@@ -62,15 +46,53 @@ public class TestHandlerManagerOrders {
     @IsTest
     static void testValideStatus() {
 
-        Order order =[SELECT Id, Status, AccountId FROM Order WHERE Id IN (SELECT OrderId FROM OrderItem ) LIMIT 1  ];
+       List< Order> orders =[SELECT Id, Status, AccountId FROM Order 
+                      WHERE Id IN (SELECT OrderId FROM OrderItem ) ];
+
+        List<Order> ords = new List<Order>();
+                      
         Test.startTest();
 
-        order.Status = 'Activated';
-        update order;
+        for (Order ord : orders) {
+
+            ord.Status = 'Activated';
+            ords.add(ord);
+           
+            
+        }
+        update ords;
+      
         Test.stopTest();
 
-        System.assertEquals('Activated', order.Status);
+        System.assertEquals('Activated', ords[0].Status);
+        System.assertEquals(25, ords.size());
 
+    }
+
+    @isTest
+    static void inactiveAccWhereOrderDeleted() {
+        List <Account> accts = [
+            SELECT Id, Active__c, ( SELECT Id FROM Orders )
+            FROM Account
+            WHERE Name LIKE 'TestAccount_%'
+        ];
+        for (Account acc : accts) {
+            System.assertEquals(False, acc.Active__c);
+        }
+        Test.startTest();
+        for(Account acc : accts){
+            for(Order ord : acc.Orders){
+                delete ord;
+            }}
+        Test.stopTest();
+        accts = [
+            SELECT Id, Active__c
+            FROM Account
+            WHERE Name LIKE 'TestAccount_%'
+        ];
+        for (Account acc : accts) {
+            System.assertEquals(false, acc.Active__c);
+        }
     }
 
     

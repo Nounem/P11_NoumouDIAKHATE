@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 10-02-2022
+ * @last modified on  : 10-09-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public with sharing class HandlerManagerOrders {
@@ -41,8 +41,11 @@ public with sharing class HandlerManagerOrders {
         {
             ordersOldAccountIds.add(ord.AccountId);
         }
+        System.debug('liste old order'+ordersOldAccountIds);
 
         List<Order> nbOrders = [ SELECT Id FROM Order  WHERE AccountId = :ordersOldAccountIds];      
+
+        System.debug('liste  new '+nbOrders);
 
         if(nbOrders.size() == 0)
         {
