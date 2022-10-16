@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 10-14-2022
+ * @last modified on  : 10-16-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @isTest
@@ -71,19 +71,32 @@ public class TestHandlerManagerOrders {
 
     @isTest
     static void inactiveAccWhereOrderDeleted() {
+
+        Set<Id> accIds = new Set<Id>();
+
         List <Account> accts = [
             SELECT Id, Active__c, ( SELECT Id FROM Orders )
             FROM Account
             WHERE Name LIKE 'TestAccount_%'
         ];
-        for (Account acc : accts) {
-            System.assertEquals(False, acc.Active__c);
-        }
-        Test.startTest();
+
         for(Account acc : accts){
-            for(Order ord : acc.Orders){
-                delete ord;
-            }}
+            accIds.add(acc.Id);
+        }
+
+        List<Order> orders = [
+            SELECT Id, AccountId
+            FROM Order 
+            WHERE AccountId IN:accIds
+        ];
+
+        for(Order ord : orders){
+            delete ord;
+        }
+
+        Test.startTest();
+
+           
         Test.stopTest();
         accts = [
             SELECT Id, Active__c
