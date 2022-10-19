@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 10-09-2022
+ * @last modified on  : 10-16-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @IsTest
@@ -12,6 +12,16 @@ public class TestDataFactory
         List<Account> accounts = new List<Account>();
         for (Integer i = 0 ; i < cnt ; i++) {
             Account acc = new Account(name = 'TestAccount_' + i);
+            accounts.add(acc);
+        }
+        insert accounts;
+        return accounts;
+    }
+
+    public static List<Account> createAccountsActive(Integer cnt) {
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0 ; i < cnt ; i++) {
+            Account acc = new Account(name = 'TestAccountActive_' + i, Active__c = True);
             accounts.add(acc);
         }
         insert accounts;

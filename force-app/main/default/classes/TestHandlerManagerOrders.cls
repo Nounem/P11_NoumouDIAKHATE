@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 10-16-2022
+ * @last modified on  : 10-18-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @isTest
@@ -11,11 +11,15 @@ public class TestHandlerManagerOrders {
     @TestSetup
     static void setupData() {
         List<Account> acct = TestDataFactory.createAccounts(5);
+        List<Account> acctActive = TestDataFactory.createAccountsActive(3);
+
         Product2 productOne = TestDataFactory.createProduct('TestItem', 'Prestation');
         PricebookEntry priceBook = TestDataFactory.createPricebookEntry(productOne.Id, 1020);
         List<Order> ord = TestDataFactory.createOrders(5, acct, priceBook);
+        List<Order> ord2 = TestDataFactory.createOrders(2, acctActive, priceBook);
         Order singleOrder = TestDataFactory.createSingleOrder(acct[0],priceBook);
         List<OrderItem> orderItems = TestDataFactory.createOrderItems(ord, priceBook);
+        List<OrderItem> orderItems2 = TestDataFactory.createOrderItems(ord2, priceBook);
 
         // si le accountId associer à une commande 
     }
@@ -65,47 +69,34 @@ public class TestHandlerManagerOrders {
         Test.stopTest();
 
         System.assertEquals('Activated', ords[0].Status);
-        System.assertEquals(25, ords.size());
+        System.assertEquals(31, ords.size());
 
     }
 
     @isTest
     static void inactiveAccWhereOrderDeleted() {
 
-        Set<Id> accIds = new Set<Id>();
-
-        List <Account> accts = [
-            SELECT Id, Active__c, ( SELECT Id FROM Orders )
-            FROM Account
-            WHERE Name LIKE 'TestAccount_%'
-        ];
-
-        for(Account acc : accts){
-            accIds.add(acc.Id);
-        }
-
         List<Order> orders = [
-            SELECT Id, AccountId
+            SELECT Id 
             FROM Order 
-            WHERE AccountId IN:accIds
+            WHERE Account.Name ='TestAccountActive_1'
         ];
 
-        for(Order ord : orders){
-            delete ord;
-        }
-
+        System.assertEquals(2, orders.size());
         Test.startTest();
 
-           
+        delete orders[0];
+        delete orders[1]; 
+        System.debug('liste orders avant  '+orders.size());
         Test.stopTest();
-        accts = [
-            SELECT Id, Active__c
-            FROM Account
-            WHERE Name LIKE 'TestAccount_%'
+
+        Account result = [
+                SELECT ID,Active__c,(SELECT ID FROM Orders) 
+                FROM Account 
+                WHERE Name = 'TestAccountActive_1'
         ];
-        for (Account acc : accts) {
-            System.assertEquals(false, acc.Active__c);
-        }
+        System.assertEquals(0,result.Orders.size());
+        System.assertEquals(false,result.Active__c);
     }
 
     
